@@ -48,6 +48,63 @@ const server = http.createServer((req, res) => {
 
     }
 
+    else if (req.url === '/add-task' && req.method === 'POST') {
+
+    let body = '';
+
+    req.on('data', chunk => {
+        body += chunk.toString();
+    });
+
+    req.on('end', () => {
+
+        try {
+            const newTask = JSON.parse(body);
+
+            const { id, taskName, assignedTo, status } = newTask;
+
+            if (
+                id === undefined ||
+                !taskName ||
+                !assignedTo ||
+                !status
+            ) {
+                res.writeHead(400, {
+                    'Content-Type': 'application/json'
+                });
+
+                return res.end(JSON.stringify({
+                    message: 'Missing required fields'
+                }));
+            }
+
+            tasks.push(newTask);
+
+            res.writeHead(201, {
+                'Content-Type': 'application/json'
+            });
+
+            res.end(JSON.stringify({
+                message: 'Task added successfully',
+                task: newTask
+            }));
+
+        } catch (error) {
+
+            res.writeHead(400, {
+                'Content-Type': 'application/json'
+            });
+
+            res.end(JSON.stringify({
+                message: 'Invalid JSON'
+            }));
+
+        }
+
+    });
+
+}
+
     else {
         res.writeHead(404, {
             'Content-Type': 'text/plain'
