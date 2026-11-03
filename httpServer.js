@@ -132,15 +132,17 @@ else if (req.url === '/home' && req.method === 'GET') {
     );
 
 }
+else {
 
+    res.writeHead(404, {
+        'Content-Type': 'application/json'
+    });
 
-    else {
-        res.writeHead(404, {
-            'Content-Type': 'text/plain'
-        });
+    res.end(JSON.stringify({
+        message: 'Route not found'
+    }));
 
-        res.end('404 Not Found');
-    }
+}
 
 });
 
