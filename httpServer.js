@@ -1,5 +1,8 @@
 import http from 'http';
 
+import fs from 'fs';
+import path from 'path';
+
 
 const tasks = [
     {
@@ -104,6 +107,32 @@ const server = http.createServer((req, res) => {
     });
 
 }
+
+else if (req.url === '/home' && req.method === 'GET') {
+
+    fs.readFile(
+        path.join(process.cwd(), 'public', 'index.html'),
+        'utf8',
+        (err, data) => {
+
+            if (err) {
+                res.writeHead(500, {
+                    'Content-Type': 'text/plain'
+                });
+
+                return res.end('Error reading HTML file');
+            }
+
+            res.writeHead(200, {
+                'Content-Type': 'text/html'
+            });
+
+            res.end(data);
+        }
+    );
+
+}
+
 
     else {
         res.writeHead(404, {
