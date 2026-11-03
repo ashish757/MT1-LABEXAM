@@ -5,6 +5,20 @@ const app = express();
 
 app.use(express.json());
 
+app.use((err, req, res, next) => {
+
+    if (err instanceof SyntaxError && err.status === 400 && 'body' in err) {
+        return res.status(400).json({
+            message: 'Invalid JSON format'
+        });
+    }
+
+    res.status(500).json({
+        message: 'Internal Server Error'
+    });
+
+});
+
 
 let tasks = [
     {
@@ -149,6 +163,14 @@ app.delete('/tasks/:id', (req, res) => {
         task: deletedTask[0]
     });
 
+});
+
+
+
+app.use((req, res) => {
+    res.status(404).json({
+        message: 'Route not found'
+    });
 });
 
 
